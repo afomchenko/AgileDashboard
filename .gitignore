@@ -88,5 +88,3 @@ agileboard-felix/*
 !agileboard-felix/pom.xml
 !agileboard-felix/conf/
 !agileboard-felix/felix-start.bat
-agileboard-frontend/src/main/resources/frontend/*
-!agileboard-frontend/src/main/resources/frontend/.git/

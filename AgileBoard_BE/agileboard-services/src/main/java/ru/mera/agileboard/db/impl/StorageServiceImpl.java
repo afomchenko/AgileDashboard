@@ -67,25 +67,25 @@ public class StorageServiceImpl implements StorageService {
                     try {
                         connectionSource = new JdbcConnectionSource(DATABASE_URL, DATABASE_USER, DATABASE_PASS);
 
-                        TableUtils.createTableIfNotExists(connectionSource, UserImpl.class);
-
-                        TableUtils.createTableIfNotExists(connectionSource, ProjectImpl.class);
-
-                        TableUtils.createTableIfNotExists(connectionSource, TaskTagImpl.class);
-
-                        TableUtils.createTableIfNotExists(connectionSource, TaskTypeImpl.class);
-
-                        TableUtils.createTableIfNotExists(connectionSource, TaskStatusImpl.class);
-
-                        TableUtils.createTableIfNotExists(connectionSource, TaskPriorityImpl.class);
-
-                        TableUtils.createTableIfNotExists(connectionSource, TaskImpl.class);
-
-                        TableUtils.createTableIfNotExists(connectionSource, CommentImpl.class);
-
-                        TableUtils.createTableIfNotExists(connectionSource, SessionImpl.class);
-
-                        TableUtils.createTableIfNotExists(connectionSource, TaskLogImpl.class);
+//                        TableUtils.createTableIfNotExists(connectionSource, UserImpl.class);
+//
+//                        TableUtils.createTableIfNotExists(connectionSource, ProjectImpl.class);
+//
+//                        TableUtils.createTableIfNotExists(connectionSource, TaskTagImpl.class);
+//
+//                        TableUtils.createTableIfNotExists(connectionSource, TaskTypeImpl.class);
+//
+//                        TableUtils.createTableIfNotExists(connectionSource, TaskStatusImpl.class);
+//
+//                        TableUtils.createTableIfNotExists(connectionSource, TaskPriorityImpl.class);
+//
+//                        TableUtils.createTableIfNotExists(connectionSource, TaskImpl.class);
+//
+//                        TableUtils.createTableIfNotExists(connectionSource, CommentImpl.class);
+//
+//                        TableUtils.createTableIfNotExists(connectionSource, SessionImpl.class);
+//
+//                        TableUtils.createTableIfNotExists(connectionSource, TaskLogImpl.class);
 
 
                         isCreated = true;

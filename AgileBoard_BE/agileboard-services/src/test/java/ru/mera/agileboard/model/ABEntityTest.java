@@ -27,7 +27,7 @@ public class ABEntityTest {
     public static void initDB() throws Exception {
 
 
-        StorageService storageService = new StorageServiceImpl("jdbc:mysql://localhost:3306/agileboard_db?autoReconnect=true", "root", "admin");
+        StorageService storageService = new StorageServiceImpl("jdbc:mysql://localhost:3306/agileboard_db_test?autoReconnect=true", "root", "admin");
         UserService userService = new UserServiceImpl();
         ProjectService projectService = new ProjectServiceImpl();
         TaskService taskService = new TaskServiceImpl();

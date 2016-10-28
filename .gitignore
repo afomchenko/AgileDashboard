@@ -88,4 +88,4 @@ agileboard-felix/*
 !agileboard-felix/pom.xml
 !agileboard-felix/conf/
 !agileboard-felix/felix-start.bat
-!agileboard-felix/felix-cache/*
+AgileBoard_BE/agileboard-felix/felix-cache/

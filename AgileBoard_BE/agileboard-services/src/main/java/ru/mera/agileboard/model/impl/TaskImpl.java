@@ -15,6 +15,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.sql.SQLException;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Collection;
@@ -271,7 +272,7 @@ public class TaskImpl extends AbstractABEntity implements Task {
 
     protected int update() {
         try {
-            setUpdated(LocalDateTime.now().atZone(ZoneId.systemDefault()).toEpochSecond() * 1000);
+            setUpdated(Instant.now().toEpochMilli());
             getDao().update(this);
         } catch (SQLException e) {
             e.printStackTrace();

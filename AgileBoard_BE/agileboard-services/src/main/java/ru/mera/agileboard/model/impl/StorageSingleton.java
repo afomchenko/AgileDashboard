@@ -3,6 +3,7 @@ package ru.mera.agileboard.model.impl;
 import org.apache.felix.scr.annotations.*;
 import ru.mera.agileboard.db.StorageService;
 
+import javax.inject.Inject;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -12,12 +13,10 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class StorageSingleton {
 
 
-    private static AtomicBoolean isCreated = new AtomicBoolean(false);
-    private static StorageSingleton instance;
+    private  static StorageSingleton instance;
 
     @Reference(cardinality = ReferenceCardinality.MANDATORY_UNARY, policy = ReferencePolicy.STATIC, name = "storage")
     private StorageService storageService;
-
 
     public StorageSingleton() {
     }

@@ -11,7 +11,12 @@ import ru.mera.agileboard.service.UserSessionService;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import javax.ws.rs.*;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -36,7 +41,6 @@ public class CommentServiceProvider {
 
     @Inject
     UserSessionService userSessionService;
-
 
     @GET
     @Path("/")
@@ -76,13 +80,10 @@ public class CommentServiceProvider {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response createComment(CommentInfo commentInfo) {
-
         if (commentInfo == null) {
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
-
         Optional<Task> task = taskService.getTaskByID(commentInfo.getTask());
-
         if (task.isPresent()) {
             Comment comment = commentService.createComment(
                     task.get(),
@@ -91,9 +92,6 @@ public class CommentServiceProvider {
             );
             return Response.status(Response.Status.CREATED).entity(new CommentInfo(comment)).build();
         }
-
         return Response.status(Response.Status.NOT_FOUND).build();
-
-
     }
 }

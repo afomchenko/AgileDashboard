@@ -15,7 +15,12 @@ import ru.mera.agileboard.service.UserSessionService;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.*;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -57,19 +62,13 @@ public class LoginServiceProvider {
         Optional<User> getUser = userService.findUserByName(login.getName());
 
         if (getUser.isPresent() && getProj.isPresent()) {
-
             if (!projectService.isUserOfProject(getProj.get(), getUser.get())) {
                 throw new LoginException("Project " + getProj.get().getShortName() + " doesn't have user " + getUser.get().getName());
             }
-
             UserProjectInfo info = new UserProjectInfo(new UserInfo(getUser.get()), new ProjectInfo(getProj.get()));
-
 //            request.getSession().putValue("loggedUser", getUser.get());
-
             Session session = sessionService.newUserSession(getUser.get(), getProj.get());
-
             info.setAuthtoken(session.getToken());
-
             return Response.ok(info).build();
         } else {
             throw new LoginException("Project or User not found");
@@ -80,14 +79,10 @@ public class LoginServiceProvider {
     @Path("/logout")
     @Produces(MediaType.APPLICATION_JSON)
     public Response logout(@QueryParam("authtoken") String authtoken) {
-
         Optional<Session> session = sessionService.setUserSession(authtoken);
 
-
         if (session.isPresent()) {
-
             session.get().delete();
-
             return Response.ok().build();
         } else {
             return Response.status(Response.Status.NOT_FOUND).build();

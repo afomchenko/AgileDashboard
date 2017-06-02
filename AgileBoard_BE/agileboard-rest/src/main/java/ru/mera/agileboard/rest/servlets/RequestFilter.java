@@ -36,10 +36,8 @@ public class RequestFilter implements ContainerRequestFilter {
                 if (s.startsWith("authtoken")) {
                     String token = s.substring(10);
                     Optional<Session> session = userSessionService.setUserSession(token);
-
                     if (!session.isPresent()) {
                         throw new NotAuthorizedException("Authorization error. Please Relogin.");
-
                     } else {
                         System.err.println("logged " + token);
                         return;

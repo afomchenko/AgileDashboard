@@ -42,7 +42,7 @@ public class ServiceDispatcher {
     private UserSessionService userSessionService;
 
     private static URI getBaseURI() {
-        return UriBuilder.fromUri("http://192.168.138.33").port(8080).path("/agile").build();
+        return UriBuilder.fromUri("http://localhost").port(8080).path("/agile").build();
     }
 
     @Activate

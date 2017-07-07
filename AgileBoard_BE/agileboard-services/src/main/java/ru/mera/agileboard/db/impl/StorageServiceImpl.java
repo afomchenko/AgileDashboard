@@ -1,25 +1,22 @@
 package ru.mera.agileboard.db.impl;
 
 import com.j256.ormlite.jdbc.JdbcConnectionSource;
+import com.j256.ormlite.jdbc.JdbcPooledConnectionSource;
 import com.j256.ormlite.support.ConnectionSource;
-import com.j256.ormlite.table.TableUtils;
-import org.apache.felix.scr.annotations.Activate;
-import org.apache.felix.scr.annotations.Component;
-import org.apache.felix.scr.annotations.Deactivate;
-import org.apache.felix.scr.annotations.Service;
 import org.osgi.framework.BundleContext;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Deactivate;
 import ru.mera.agileboard.db.StorageService;
-import ru.mera.agileboard.model.TaskLog;
-import ru.mera.agileboard.model.impl.*;
 
+import java.io.IOException;
 import java.sql.SQLException;
 
 
 /**
  * Created by antfom on 09.02.2015.
  */
-@Component(name = "ru.mera.bt.db.DBService", immediate = true)
-@Service(value = ru.mera.agileboard.db.StorageService.class)
+@Component(name = "ru.mera.bt.db.DBService", service = StorageService.class, immediate = true)
 public class StorageServiceImpl implements StorageService {
 
     private static ConnectionSource connectionSource;
@@ -46,7 +43,6 @@ public class StorageServiceImpl implements StorageService {
         DATABASE_PASS = context.getProperty("ru.mera.agileboard.db.password");
 
         System.out.println("storage service started");
-        init();
     }
 
     @Deactivate
@@ -54,7 +50,7 @@ public class StorageServiceImpl implements StorageService {
         if (connectionSource != null) {
             try {
                 connectionSource.close();
-            } catch (SQLException e) {
+            } catch (IOException e) {
                 e.printStackTrace();
             }
         }
@@ -65,29 +61,7 @@ public class StorageServiceImpl implements StorageService {
             synchronized (this) {
                 if (!isCreated) {
                     try {
-                        connectionSource = new JdbcConnectionSource(DATABASE_URL, DATABASE_USER, DATABASE_PASS);
-
-//                        TableUtils.createTableIfNotExists(connectionSource, UserImpl.class);
-//
-//                        TableUtils.createTableIfNotExists(connectionSource, ProjectImpl.class);
-//
-//                        TableUtils.createTableIfNotExists(connectionSource, TaskTagImpl.class);
-//
-//                        TableUtils.createTableIfNotExists(connectionSource, TaskTypeImpl.class);
-//
-//                        TableUtils.createTableIfNotExists(connectionSource, TaskStatusImpl.class);
-//
-//                        TableUtils.createTableIfNotExists(connectionSource, TaskPriorityImpl.class);
-//
-//                        TableUtils.createTableIfNotExists(connectionSource, TaskImpl.class);
-//
-//                        TableUtils.createTableIfNotExists(connectionSource, CommentImpl.class);
-//
-//                        TableUtils.createTableIfNotExists(connectionSource, SessionImpl.class);
-//
-//                        TableUtils.createTableIfNotExists(connectionSource, TaskLogImpl.class);
-
-
+                        connectionSource = new JdbcConnectionSource(DATABASE_URL, DATABASE_USER, DATABASE_PASS, new MySql6DbType());
                         isCreated = true;
                     } catch (SQLException e) {
                         e.printStackTrace();

@@ -1,6 +1,6 @@
 package ru.mera.agileboard.model.impl;
 
-import org.apache.felix.scr.annotations.*;
+import org.osgi.service.component.annotations.*;
 import ru.mera.agileboard.db.StorageService;
 
 import javax.inject.Inject;
@@ -12,10 +12,9 @@ import java.util.concurrent.atomic.AtomicBoolean;
 @Component(name = "ru.mera.agileboard.model.Storage", immediate = true)
 public class StorageSingleton {
 
-
     private  static StorageSingleton instance;
 
-    @Reference(cardinality = ReferenceCardinality.MANDATORY_UNARY, policy = ReferencePolicy.STATIC, name = "storage")
+    @Reference(cardinality = ReferenceCardinality.MANDATORY, policy = ReferencePolicy.STATIC, name = "storage")
     private StorageService storageService;
 
     public StorageSingleton() {

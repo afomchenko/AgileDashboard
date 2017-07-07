@@ -2,10 +2,9 @@ package ru.mera.agileboard.service.impl;
 
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.stmt.QueryBuilder;
-import org.apache.felix.scr.annotations.Activate;
-import org.apache.felix.scr.annotations.Component;
-import org.apache.felix.scr.annotations.Deactivate;
-import org.apache.felix.scr.annotations.Service;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Deactivate;
 import ru.mera.agileboard.model.Project;
 import ru.mera.agileboard.model.Session;
 import ru.mera.agileboard.model.User;
@@ -19,8 +18,7 @@ import java.util.UUID;
 /**
  * Created by antfom on 25.02.2015.
  */
-@Component(name = "ru.mera.agileboard.service.UserSessionComponent", immediate = true)
-@Service(value = UserSessionService.class)
+@Component(name = "ru.mera.agileboard.service.UserSessionComponent", service = UserSessionService.class, immediate = true)
 public class UserSessionServiceImpl implements UserSessionService {
 
     ThreadLocal<Session> userSession = new ThreadLocal<>();

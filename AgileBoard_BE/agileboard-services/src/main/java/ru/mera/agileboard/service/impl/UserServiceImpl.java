@@ -1,10 +1,9 @@
 package ru.mera.agileboard.service.impl;
 
 import com.j256.ormlite.dao.Dao;
-import org.apache.felix.scr.annotations.Activate;
-import org.apache.felix.scr.annotations.Component;
-import org.apache.felix.scr.annotations.Deactivate;
-import org.apache.felix.scr.annotations.Service;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Deactivate;
 import ru.mera.agileboard.model.User;
 import ru.mera.agileboard.model.impl.UserImpl;
 import ru.mera.agileboard.service.UserService;
@@ -17,8 +16,7 @@ import java.util.Optional;
 /**
  * Created by antfom on 10.02.2015.
  */
-@Component(name = "ru.mera.agileboard.service.UserServiceComponent", immediate = true)
-@Service(value = ru.mera.agileboard.service.UserService.class)
+@Component(name = "ru.mera.agileboard.service.UserServiceComponent", service = UserService.class, immediate = true)
 public class UserServiceImpl implements UserService {
 
     @Activate
@@ -28,14 +26,6 @@ public class UserServiceImpl implements UserService {
     @Deactivate
     public void stop() {
     }
-
-    @Override
-    public User createUser(String name, String email) {
-        User user = new UserImpl(name, email);
-        user.store();
-        return user;
-    }
-
 
     @Override
     public Optional<User> findUserByName(String name) {
@@ -51,7 +41,6 @@ public class UserServiceImpl implements UserService {
 
         return Optional.ofNullable(user);
     }
-
 
     @Override
     public Optional<User> findUserByID(int id) {
@@ -81,6 +70,13 @@ public class UserServiceImpl implements UserService {
         }
 
         return new ArrayList<>();
+    }
+
+    @Override
+    public User createUser(String name, String email) {
+        User user = new UserImpl(name, email);
+        user.store();
+        return user;
     }
 
 }

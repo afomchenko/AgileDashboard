@@ -2,8 +2,7 @@ package ru.mera.agileboard.service.impl;
 
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.stmt.QueryBuilder;
-import org.apache.felix.scr.annotations.Component;
-import org.apache.felix.scr.annotations.Service;
+import org.osgi.service.component.annotations.Component;
 import ru.mera.agileboard.model.Project;
 import ru.mera.agileboard.model.User;
 import ru.mera.agileboard.model.impl.ProjectImpl;
@@ -17,8 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
-@Component(name = "ru.mera.agileboard.service.ProjectServiceComponent", immediate = true)
-@Service(value = ru.mera.agileboard.service.ProjectService.class)
+@Component(name = "ru.mera.agileboard.service.ProjectServiceComponent", service = ProjectService.class, immediate = true)
 public class ProjectServiceImpl implements ProjectService {
 
     @Override

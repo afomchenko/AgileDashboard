@@ -1,7 +1,10 @@
 package ru.mera.agileboard.service.impl;
 
 import com.j256.ormlite.dao.Dao;
-import org.apache.felix.scr.annotations.*;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicy;
 import ru.mera.agileboard.model.Comment;
 import ru.mera.agileboard.model.Task;
 import ru.mera.agileboard.model.User;
@@ -18,14 +21,13 @@ import java.util.List;
 /**
  * Created by antfom on 27.02.2015.
  */
-@Component(name = "ru.mera.agileboard.service.CommentServiceComponent", immediate = true)
-@Service(value = ru.mera.agileboard.service.CommentService.class)
+@Component(name = "ru.mera.agileboard.service.CommentServiceComponent", service = CommentService.class, immediate = true)
 public class CommentServiceImpl implements CommentService {
 
-    @Reference(cardinality = ReferenceCardinality.MANDATORY_UNARY, policy = ReferencePolicy.STATIC, name = "userService")
+    @Reference(cardinality = ReferenceCardinality.MANDATORY, policy = ReferencePolicy.STATIC, name = "userService")
     private volatile UserService userService;
 
-    @Reference(cardinality = ReferenceCardinality.MANDATORY_UNARY, policy = ReferencePolicy.STATIC, name = "taskService")
+    @Reference(cardinality = ReferenceCardinality.MANDATORY, policy = ReferencePolicy.STATIC, name = "taskService")
     private volatile TaskService taskService;
 
     @Override

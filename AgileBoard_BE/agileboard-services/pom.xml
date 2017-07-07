@@ -3,58 +3,37 @@
          xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
+    <parent>
+        <groupId>ru.mera.agileboard</groupId>
+        <artifactId>agileboard-parent</artifactId>
+        <version>1.0</version>
+    </parent>
     <groupId>ru.mera.agileboard</groupId>
     <artifactId>agileboard-services</artifactId>
     <version>1.0</version>
     <packaging>bundle</packaging>
     <name>Agile Board Services</name>
 
-    <properties>
-        <jersey.version>2.9</jersey.version>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
-
     <build>
         <plugins>
             <plugin>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
-                </configuration>
-            </plugin>
-            <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
-                <version>2.5.3</version>
+                <version>3.3.0</version>
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
                         <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
+                        <Private-Package>ru.mera.agileboard.service.impl, ru.mera.agileboard.model.impl, ru.mera.agileboard.db.*</Private-Package>
                         <Export-Package>ru.mera.agileboard.service, ru.mera.agileboard.model</Export-Package>
                         <Import-Package>*,
-                            com.mysql.jdbc
+                            com.mysql.cj.jdbc
                         </Import-Package>
                         <Embed-Dependency>ormlite-jdbc;scope=!provided|runtime;inline=true,
                             ormlite-core;scope=!provided|runtime;inline=true
                         </Embed-Dependency>
                     </instructions>
-                    <!--<obrRepository>file:///D:/dev/btfelix</obrRepository>-->
                 </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.felix</groupId>
-                <artifactId>maven-scr-plugin</artifactId>
-                <version>1.20.0</version>
-                <executions>
-                    <execution>
-                        <id>generate-scr-scrdescriptor</id>
-                        <goals>
-                            <goal>scr</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
         </plugins>
     </build>
@@ -63,70 +42,47 @@
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
-            <version>5.1.34</version>
+            <type>jar</type>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.11</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.felix</groupId>
             <artifactId>org.apache.felix.gogo.runtime</artifactId>
-            <version>0.12.0</version>
         </dependency>
         <dependency>
             <groupId>org.apache.felix</groupId>
             <artifactId>org.osgi.core</artifactId>
-            <version>1.4.0</version>
         </dependency>
         <dependency>
             <groupId>org.apache.felix</groupId>
             <artifactId>org.apache.felix.scr</artifactId>
-            <version>1.8.2</version>
         </dependency>
         <dependency>
-            <groupId>org.apache.felix</groupId>
-            <artifactId>org.apache.felix.scr.annotations</artifactId>
-            <version>1.9.10</version>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.service.component.annotations</artifactId>
         </dependency>
         <dependency>
             <groupId>com.j256.ormlite</groupId>
             <artifactId>ormlite-jdbc</artifactId>
-            <version>4.48</version>
+            <version>5.0</version>
         </dependency>
         <dependency>
             <groupId>com.j256.ormlite</groupId>
             <artifactId>ormlite-core</artifactId>
-            <version>4.48</version>
+            <version>5.0</version>
         </dependency>
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>14.0.1</version>
         </dependency>
         <dependency>
             <groupId>javax.inject</groupId>
             <artifactId>javax.inject</artifactId>
-            <version>1</version>
         </dependency>
-
-
     </dependencies>
-
-    <!--<distributionManagement>-->
-    <!--&lt;!&ndash; releases repo &ndash;&gt;-->
-    <!--<repository>-->
-    <!--<id>repo-rel</id>-->
-    <!--<url>file:///D:/dev/btfelix/releases</url>-->
-    <!--</repository>-->
-
-    <!--&lt;!&ndash; snapshot repo &ndash;&gt;-->
-    <!--<snapshotRepository>-->
-    <!--<id>repo-snap</id>-->
-    <!--<url>file:///D:/dev/btfelix/snapshots</url>-->
-    <!--</snapshotRepository>-->
-    <!--</distributionManagement>-->
-
 </project>

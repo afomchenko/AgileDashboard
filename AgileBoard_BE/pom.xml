@@ -40,6 +40,7 @@
   </build>
 
   <modules>
+    <module>agileboard-parent</module>
     <module>agileboard-services</module>
     <module>agileboard-rest</module>
     <module>agileboard-frontend</module>

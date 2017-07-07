@@ -1,119 +1,87 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-<groupId>ru.mera.agileboard</groupId>
-<artifactId>agileboard-www-frontend</artifactId>
-<version>1.0</version>
-<packaging>bundle</packaging>
-<name>Agile Board Frontend</name>
+    <parent>
+        <groupId>ru.mera.agileboard</groupId>
+        <artifactId>agileboard-parent</artifactId>
+        <version>1.0</version>
+    </parent>
+    <groupId>ru.mera.agileboard</groupId>
+    <artifactId>agileboard-www-frontend</artifactId>
+    <version>1.0</version>
+    <packaging>bundle</packaging>
+    <name>Agile Board Frontend</name>
 
-<properties>
-<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-</properties>
-
-<build>
-<plugins>
-    <plugin>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <configuration>
-            <source>1.8</source>
-            <target>1.8</target>
-        </configuration>
-    </plugin>
-    <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
-        <version>2.5.3</version>
-        <extensions>true</extensions>
-        <configuration>
-            <instructions>
-
-                <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
-                <Export-Package>ru.mera.agileboard.rest</Export-Package>
-
-                <Import-Package>javax.servlet;version="2.4",javax.servlet.http;version="
-                    2.4",*
-                </Import-Package>
-                <excludeTransitive>true</excludeTransitive>
-            </instructions>
-            <!--<obrRepository>file:///D:/dev/btfelix</obrRepository>-->
-        </configuration>
-    </plugin>
-    <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-scr-plugin</artifactId>
-        <version>1.20.0</version>
-        <executions>
-            <execution>
-                <id>generate-scr-scrdescriptor</id>
-                <goals>
-                    <goal>scr</goal>
-                </goals>
-            </execution>
-        </executions>
-    </plugin>
-    <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-dependency-plugin</artifactId>
-        <version>2.10</version>
-        <executions>
-            <execution>
-                <id>copy-dependencies</id>
-                <phase>package</phase>
-                <goals>
-                    <goal>copy-dependencies</goal>
-                </goals>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <version>3.3.0</version>
+                <extensions>true</extensions>
                 <configuration>
+                    <instructions>
+                        <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
+                        <Export-Package>ru.mera.agileboard.rest</Export-Package>
 
-                    <outputDirectory>${project.build.directory}/alternateLocation</outputDirectory>
-                    <overWriteReleases>false</overWriteReleases>
-                    <overWriteSnapshots>false</overWriteSnapshots>
-                    <overWriteIfNewer>true</overWriteIfNewer>
-                    <includeScope>runtime</includeScope>
-                    <includeScope>provided</includeScope>
+                        <Import-Package>javax.servlet;version="2.4",javax.servlet.http;version="
+                            2.4",*
+                        </Import-Package>
+                        <excludeTransitive>true</excludeTransitive>
+                    </instructions>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>2.10</version>
+                <executions>
+                    <execution>
+                        <id>copy-dependencies</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/alternateLocation</outputDirectory>
+                            <overWriteReleases>false</overWriteReleases>
+                            <overWriteSnapshots>false</overWriteSnapshots>
+                            <overWriteIfNewer>true</overWriteIfNewer>
+                            <includeScope>runtime</includeScope>
+                            <includeScope>provided</includeScope>
+                        </configuration>
 
-            </execution>
-        </executions>
-    </plugin>
-</plugins>
-</build>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 
     <dependencies>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.11</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.felix</groupId>
             <artifactId>org.osgi.core</artifactId>
-            <version>1.4.0</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.felix</groupId>
             <artifactId>org.osgi.compendium</artifactId>
-            <version>1.4.0</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.felix</groupId>
             <artifactId>org.apache.felix.scr</artifactId>
-            <version>1.8.2</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>org.apache.felix</groupId>
-            <artifactId>org.apache.felix.scr.annotations</artifactId>
-            <version>1.9.10</version>
-            <scope>compile</scope>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.service.component.annotations</artifactId>
         </dependency>
-
     </dependencies>
 
-        </project>
+</project>

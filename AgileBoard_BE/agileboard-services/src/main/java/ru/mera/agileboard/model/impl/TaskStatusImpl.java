@@ -58,6 +58,17 @@ public class TaskStatusImpl extends AbstractABEntity implements TaskStatus {
     }
 
     @Override
+    public boolean delete() {
+        try {
+            obsolete = true;
+            getDao().update(this);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return true;
+    }
+
+    @Override
     public String getName() {
         return name;
     }
@@ -88,16 +99,5 @@ public class TaskStatusImpl extends AbstractABEntity implements TaskStatus {
             e.printStackTrace();
         }
         return getId();
-    }
-
-    @Override
-    public boolean delete() {
-        try {
-            obsolete = true;
-            getDao().update(this);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return true;
     }
 }

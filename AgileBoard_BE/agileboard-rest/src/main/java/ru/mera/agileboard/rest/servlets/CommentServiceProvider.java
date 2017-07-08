@@ -43,11 +43,9 @@ public class CommentServiceProvider {
     UserSessionService userSessionService;
 
     @GET
-    @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getComments() {
-        return Response.ok(new GenericEntity<List<CommentInfo>>(CommentInfo.fromComments(commentService.getAllComments())) {
-        }).build();
+        return Response.ok(new GenericEntity<List<CommentInfo>>(CommentInfo.fromComments(commentService.getAllComments())) {}).build();
     }
 
     @GET
@@ -57,8 +55,7 @@ public class CommentServiceProvider {
         System.err.println(name);
         Optional<User> user = userService.findUserByName(name);
         if (user.isPresent()) {
-            return Response.ok(new GenericEntity<List<CommentInfo>>(CommentInfo.fromComments(commentService.findCommentsByUser(user.get()))) {
-            }).build();
+            return Response.ok(new GenericEntity<List<CommentInfo>>(CommentInfo.fromComments(commentService.findCommentsByUser(user.get()))) {}).build();
         }
         return Response.status(Response.Status.NOT_FOUND).build();
     }
@@ -69,14 +66,12 @@ public class CommentServiceProvider {
     public Response getCommentsByTask(@PathParam("id") int id) {
         Optional<Task> task = taskService.getTaskByID(id);
         if (task.isPresent()) {
-            return Response.ok(new GenericEntity<List<CommentInfo>>(CommentInfo.fromComments(commentService.findCommentsByTask(task.get()))) {
-            }).build();
+            return Response.ok(new GenericEntity<List<CommentInfo>>(CommentInfo.fromComments(commentService.findCommentsByTask(task.get()))) {}).build();
         }
         return Response.status(Response.Status.NOT_FOUND).build();
     }
 
     @POST
-    @Path("/")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response createComment(CommentInfo commentInfo) {

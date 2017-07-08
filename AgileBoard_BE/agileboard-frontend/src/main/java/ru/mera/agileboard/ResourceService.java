@@ -1,10 +1,10 @@
 package ru.mera.agileboard;
 
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceReference;
 import org.osgi.service.http.HttpService;
 import org.osgi.util.tracker.ServiceTracker;
 
@@ -20,15 +20,6 @@ public class ResourceService {
         System.err.println("Service Dispatcher starting");
 
         httpTracker = new ServiceTracker(context, HttpService.class.getName(), null) {
-            public void removedService(ServiceReference reference, Object service) {
-                // HTTP service is no longer available, unregister our servlet...
-                try {
-                    ((HttpService) service).unregister("/agileboard");
-                } catch (IllegalArgumentException exception) {
-                    // Ignore; servlet registration probably failed earlier on...
-                }
-            }
-
             public Object addingService(ServiceReference reference) {
                 ServiceReference ref = context.getServiceReference(HttpService.class.getName());
                 HttpService service = (HttpService) context.getService(ref);
@@ -37,11 +28,20 @@ public class ResourceService {
                 System.err.println("creating conf service");
 
                 try {
-                    service.registerResources("/agileboard","frontend",new HttpContextImpl());
+                    service.registerResources("/agileboard", "frontend", new HttpContextImpl());
                 } catch (Exception exception) {
                     exception.printStackTrace();
                 }
                 return service;
+            }
+
+            public void removedService(ServiceReference reference, Object service) {
+                // HTTP service is no longer available, unregister our servlet...
+                try {
+                    ((HttpService) service).unregister("/agileboard");
+                } catch (IllegalArgumentException exception) {
+                    // Ignore; servlet registration probably failed earlier on...
+                }
             }
         };
 

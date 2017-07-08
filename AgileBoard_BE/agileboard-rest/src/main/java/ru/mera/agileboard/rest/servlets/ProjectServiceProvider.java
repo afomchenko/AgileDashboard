@@ -36,7 +36,6 @@ public class ProjectServiceProvider {
     UserService userService;
 
     @GET
-    @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getProjects() throws JAXBException {
         return Response.ok(new GenericEntity<List<ProjectInfo>>(ProjectInfo.fromProjects(projectService.getProjects())) {
@@ -56,7 +55,6 @@ public class ProjectServiceProvider {
     }
 
     @POST
-    @Path("/")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response create(ProjectInfo project) {

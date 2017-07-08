@@ -1,7 +1,13 @@
 package ru.mera.agileboard.service;
 
 import com.google.common.util.concurrent.ListenableFuture;
-import ru.mera.agileboard.model.*;
+import ru.mera.agileboard.model.Project;
+import ru.mera.agileboard.model.Task;
+import ru.mera.agileboard.model.TaskBuilder;
+import ru.mera.agileboard.model.TaskPriority;
+import ru.mera.agileboard.model.TaskStatus;
+import ru.mera.agileboard.model.TaskTag;
+import ru.mera.agileboard.model.TaskType;
 
 import java.util.Collection;
 import java.util.List;

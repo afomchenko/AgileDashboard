@@ -52,20 +52,35 @@ public class ProjectImpl extends AbstractABEntity implements Project {
         return dao;
     }
 
-    public String getShortName() {
-        return shortName;
-    }
-
-    public void setShortName(String shortName) {
-        this.shortName = shortName;
-    }
-
     public boolean isObsolete() {
         return obsolete;
     }
 
     public void setObsolete(boolean obsolete) {
         this.obsolete = obsolete;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    @Override
+    public boolean delete() {
+        try {
+            obsolete = true;
+            getDao().update(this);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return true;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     @Override
@@ -78,30 +93,21 @@ public class ProjectImpl extends AbstractABEntity implements Project {
         this.desc = desc;
     }
 
-    public int getId() {
-        return id;
+    public String getShortName() {
+        return shortName;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void addProjectUser(User user) {
-        ProjectUsers pu = new ProjectUsers(this, (UserImpl) user);
-        pu.store();
+    public void setShortName(String shortName) {
+        this.shortName = shortName;
     }
 
     public void deleteProjectUser(User user) {
         ;
     }
 
-    @Override
-    public String toString() {
-        return String.valueOf(id);
+    public void addProjectUser(User user) {
+        ProjectUsers pu = new ProjectUsers(this, (UserImpl) user);
+        pu.store();
     }
 
     protected int update() {
@@ -123,30 +129,30 @@ public class ProjectImpl extends AbstractABEntity implements Project {
     }
 
     @Override
-    public boolean delete() {
-        try {
-            obsolete = true;
-            getDao().update(this);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return true;
+    public int hashCode() {
+        return id;
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         ProjectImpl project = (ProjectImpl) o;
 
-        if (id != project.id) return false;
+        if (id != project.id) {
+            return false;
+        }
 
         return true;
     }
 
     @Override
-    public int hashCode() {
-        return id;
+    public String toString() {
+        return String.valueOf(id);
     }
 }

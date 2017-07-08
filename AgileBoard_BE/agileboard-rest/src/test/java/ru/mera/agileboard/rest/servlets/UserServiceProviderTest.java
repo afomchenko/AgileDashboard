@@ -1,7 +1,5 @@
 package ru.mera.agileboard.rest.servlets;
 
-import org.junit.Test;
-import org.mockito.Mockito;
 import ru.mera.agileboard.rest.info.PatchParameter;
 import ru.mera.agileboard.rest.info.UserInfo;
 
@@ -12,6 +10,9 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.Arrays;
 import java.util.List;
+
+import org.junit.Test;
+import org.mockito.Mockito;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;

@@ -53,6 +53,16 @@ public class ProjectUsers extends AbstractABEntity {
         return id;
     }
 
+    @Override
+    public boolean delete() {
+        try {
+            getDao().delete(this);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return true;
+    }
+
     protected int update() {
         try {
             getDao().update(this);
@@ -69,16 +79,6 @@ public class ProjectUsers extends AbstractABEntity {
             e.printStackTrace();
         }
         return getId();
-    }
-
-    @Override
-    public boolean delete() {
-        try {
-            getDao().delete(this);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return true;
     }
 
 }

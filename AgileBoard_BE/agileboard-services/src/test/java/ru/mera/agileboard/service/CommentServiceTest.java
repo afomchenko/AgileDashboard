@@ -1,9 +1,5 @@
 package ru.mera.agileboard.service;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
 import ru.mera.agileboard.db.impl.StorageServiceImpl;
 import ru.mera.agileboard.model.Comment;
 import ru.mera.agileboard.model.Task;
@@ -18,7 +14,15 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(Parameterized.class)
 public class CommentServiceTest {

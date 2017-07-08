@@ -66,7 +66,6 @@ public class LoginServiceProvider {
                 throw new LoginException("Project " + getProj.get().getShortName() + " doesn't have user " + getUser.get().getName());
             }
             UserProjectInfo info = new UserProjectInfo(new UserInfo(getUser.get()), new ProjectInfo(getProj.get()));
-//            request.getSession().putValue("loggedUser", getUser.get());
             Session session = sessionService.newUserSession(getUser.get(), getProj.get());
             info.setAuthtoken(session.getToken());
             return Response.ok(info).build();

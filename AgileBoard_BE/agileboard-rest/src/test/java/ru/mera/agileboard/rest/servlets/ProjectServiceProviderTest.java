@@ -1,6 +1,5 @@
 package ru.mera.agileboard.rest.servlets;
 
-import org.junit.Test;
 import ru.mera.agileboard.rest.info.ProjectInfo;
 
 import javax.ws.rs.client.Entity;
@@ -9,6 +8,8 @@ import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.List;
+
+import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 

@@ -16,9 +16,9 @@ public interface ABServiceConsole {
 
     String addtask(String taskDesc);
 
-    String init ();
+    String init();
 
-    String initAll ();
+    String initAll();
 
     public List<Task> gettasks(String filter, String attr);
 

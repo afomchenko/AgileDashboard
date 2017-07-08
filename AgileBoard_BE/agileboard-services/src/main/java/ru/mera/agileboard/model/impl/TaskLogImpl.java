@@ -71,6 +71,16 @@ public class TaskLogImpl extends AbstractABEntity implements ru.mera.agileboard.
     }
 
     @Override
+    public boolean delete() {
+        try {
+            getDao().delete(this);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return true;
+    }
+
+    @Override
     public Task getTask() {
         return task;
     }
@@ -139,16 +149,6 @@ public class TaskLogImpl extends AbstractABEntity implements ru.mera.agileboard.
             e.printStackTrace();
         }
         return getId();
-    }
-
-    @Override
-    public boolean delete() {
-        try {
-            getDao().delete(this);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return true;
     }
 }
 

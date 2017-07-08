@@ -25,6 +25,11 @@ public abstract class AbstractStatusType implements StatusType {
     }
 
     @Override
+    public int getStatusCode() {
+        return statusCode;
+    }
+
+    @Override
     public Family getFamily() {
         return family;
     }
@@ -32,11 +37,6 @@ public abstract class AbstractStatusType implements StatusType {
     @Override
     public String getReasonPhrase() {
         return reasonPhrase;
-    }
-
-    @Override
-    public int getStatusCode() {
-        return statusCode;
     }
 
 }

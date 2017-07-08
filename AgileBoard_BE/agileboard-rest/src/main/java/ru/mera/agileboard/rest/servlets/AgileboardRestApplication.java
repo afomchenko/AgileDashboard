@@ -1,4 +1,4 @@
-package ru.mera.agileboard.rest;
+package ru.mera.agileboard.rest.servlets;
 
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
@@ -32,7 +32,7 @@ import java.io.PrintStream;
  * Created by antfom on 12.02.2015.
  */
 @Component(name = "RestServiceDispatcherComponent", immediate = true)
-public class ServiceDispatcher {
+public class AgileboardRestApplication {
 
     private ServiceTracker<Object, Object> httpTracker;
     private UserService userService;
@@ -42,28 +42,33 @@ public class ServiceDispatcher {
     private LoggingService loggingService;
     private UserSessionService userSessionService;
 
-    private volatile ServiceRegistration<ServiceDispatcher> registration;
+    private volatile ServiceRegistration<AgileboardRestApplication> registration;
 
     @Reference(cardinality = ReferenceCardinality.MANDATORY, policy = ReferencePolicy.STATIC, name = "BTUserServiceRef")
     public void setUserService(UserService userService) {
         this.userService = userService;
     }
+
     @Reference(cardinality = ReferenceCardinality.MANDATORY, policy = ReferencePolicy.STATIC, name = "BTTasksServiceRef")
     public void setTaskService(TaskService taskService) {
         this.taskService = taskService;
     }
+
     @Reference(cardinality = ReferenceCardinality.MANDATORY, policy = ReferencePolicy.STATIC, name = "BTProjectsServiceRef")
     public void setProjectService(ProjectService projectService) {
         this.projectService = projectService;
     }
+
     @Reference(cardinality = ReferenceCardinality.MANDATORY, policy = ReferencePolicy.STATIC, name = "BTCommentsServiceRef")
     public void setCommentService(CommentService commentService) {
         this.commentService = commentService;
     }
+
     @Reference(cardinality = ReferenceCardinality.MANDATORY, policy = ReferencePolicy.STATIC, name = "BTLoggingServiceRef")
     public void setLoggingService(LoggingService loggingService) {
         this.loggingService = loggingService;
     }
+
     @Reference(cardinality = ReferenceCardinality.MANDATORY, policy = ReferencePolicy.STATIC, name = "BTUserSessionRef")
     public void setUserSessionService(UserSessionService userSessionService) {
         this.userSessionService = userSessionService;
@@ -80,12 +85,13 @@ public class ServiceDispatcher {
                 System.err.println("creating config");
                 ServletContainer servlet = new ServletContainer(createConfig());//new ABServlet(config, userSessionService);
                 try {
-                    service.registerServlet("/agile", servlet, null, null);// new HttpContextImpl(userSessionService));
+                    service.registerServlet("/agile", servlet, null, null);
                 } catch (Exception exception) {
                     exception.printStackTrace();
                 }
                 return service;
             }
+
             public void removedService(ServiceReference reference, Object service) {
                 // HTTP service is no longer available, unregister our servlet...
                 try {

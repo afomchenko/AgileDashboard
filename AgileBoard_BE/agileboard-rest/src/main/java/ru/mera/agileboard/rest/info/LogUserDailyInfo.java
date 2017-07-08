@@ -20,8 +20,9 @@ public class LogUserDailyInfo {
     public LogUserDailyInfo(long date, List<TaskLog> tasks) {
         this.date = date;
         this.tasks = tasks.stream().map(LogUserDailyTasks::new).collect(Collectors.toList());
-        if (tasks.size() > 0)
+        if (tasks.size() > 0) {
             this.total = tasks.stream().mapToInt(TaskLog::getLogged).reduce((a, b) -> a + b).getAsInt();
+        }
     }
 
     public int getTotal() {

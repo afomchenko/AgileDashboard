@@ -1,7 +1,6 @@
 package ru.mera.agileboard.db.impl;
 
 import com.j256.ormlite.jdbc.JdbcConnectionSource;
-import com.j256.ormlite.jdbc.JdbcPooledConnectionSource;
 import com.j256.ormlite.support.ConnectionSource;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Activate;

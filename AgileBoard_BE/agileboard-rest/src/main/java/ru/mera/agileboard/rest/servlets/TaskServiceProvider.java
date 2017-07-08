@@ -13,11 +13,23 @@ import ru.mera.agileboard.rest.info.PatchParameter;
 import ru.mera.agileboard.rest.info.TaskInfo;
 import ru.mera.agileboard.rest.info.TaskStatusInfo;
 import ru.mera.agileboard.rest.info.UserInfo;
-import ru.mera.agileboard.service.*;
+import ru.mera.agileboard.service.LoggingService;
+import ru.mera.agileboard.service.ProjectService;
+import ru.mera.agileboard.service.TaskService;
+import ru.mera.agileboard.service.UserService;
+import ru.mera.agileboard.service.UserSessionService;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import javax.ws.rs.*;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.container.AsyncResponse;
 import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.GenericEntity;
@@ -25,8 +37,11 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
-import java.util.*;
-
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 @Singleton
 @Path("/tasks")
@@ -51,17 +66,13 @@ public class TaskServiceProvider {
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getTaskById(@PathParam("id") int id) {
-
         Optional<Task> t = taskService.getTaskByID(id);
-
         if (t.isPresent()) {
             TaskInfo task = new TaskInfo(t.get());
             return Response.ok(task).build();
         }
-
         return Response.status(Response.Status.NOT_FOUND).build();
     }
-
 
     @GET
     @Path("/project")
@@ -80,15 +91,6 @@ public class TaskServiceProvider {
         return Response.ok(new GenericEntity<List<TaskInfo>>(tasks) {
         }).build();
     }
-//
-//    @GET
-//    @Path("search/{str}")
-//    @Produces(MediaType.APPLICATION_JSON)
-//    public Response getTasksByFulltext(@PathParam("str") String str) throws UnsupportedEncodingException {
-//        List<TaskInfo> tasks = TaskInfo.fromTasks(loggingService.getLoggedByTask(taskService.getTaskFulltext(URLDecoder.decode(str, "UTF-8"))));
-//        return Response.ok(new GenericEntity<List<TaskInfo>>(tasks) {
-//        }).build();
-//    }
 
     @GET
     @Path("/search")
@@ -129,32 +131,26 @@ public class TaskServiceProvider {
         List<TaskInfo> tasks = TaskInfo.fromTasks(loggingService.getLoggedByTask(
                 taskService.getTasks(TaskService.Filter.USERINPROGRESS,
                         String.valueOf(userSessionService.getUserSession().getUser().getId()))));
-        return Response.ok(new GenericEntity<List<TaskInfo>>(tasks) {
-        }).build();
+        return Response.ok(new GenericEntity<List<TaskInfo>>(tasks) {}).build();
     }
 
     @GET
     @Path("/complete")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getTasksByUserCompleted() {
-
         List<TaskInfo> tasks = TaskInfo.fromTasks(loggingService.getLoggedByTask(
                 taskService.getTasks(TaskService.Filter.USERCOMPL,
                         String.valueOf(userSessionService.getUserSession().getUser().getId()))));
-
-        return Response.ok(new GenericEntity<List<TaskInfo>>(tasks) {
-        }).build();
+        return Response.ok(new GenericEntity<List<TaskInfo>>(tasks) {}).build();
     }
 
     @GET
     @Path("/commented")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getTasksByUserCommentsed() {
-
         List<TaskInfo> tasks = TaskInfo.fromTasks(loggingService.getLoggedByTask(
                 taskService.getTasks(TaskService.Filter.USERCOMMENTED,
                         String.valueOf(userSessionService.getUserSession().getUser().getId()))));
-
         return Response.ok(new GenericEntity<List<TaskInfo>>(tasks) {
         }).build();
     }
@@ -194,7 +190,6 @@ public class TaskServiceProvider {
         }).build();
     }
 
-
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getTasks() {
@@ -213,6 +208,7 @@ public class TaskServiceProvider {
             public void onSuccess(List<Task> tasks) {
                 response.resume(TaskInfo.fromTasks(tasks));
             }
+
             public void onFailure(Throwable thrown) {
                 response.resume(thrown);
             }
@@ -223,8 +219,9 @@ public class TaskServiceProvider {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response create(TaskInfo task) {
-        if (task == null) return Response.status(Response.Status.BAD_REQUEST).build();
-
+        if (task == null) {
+            return Response.status(Response.Status.BAD_REQUEST).build();
+        }
         TaskBuilder builder = taskService.createTask();
         builder.project(projectService.getProjectByShortName(task.getProject()).get())
                 .name(task.getName()).description(task.getDescription())
@@ -235,7 +232,6 @@ public class TaskServiceProvider {
                 .creator(userSessionService.getUserSession().getUser())
                 .assignee(userService.findUserByID(task.getAssignee()).get());
         Task createdTask = builder.build();
-//        createdTask.setCreator(userSessionService.getUserSession());
         createdTask.store();
         return Response.status(201).entity(new TaskInfo(createdTask)).build();
     }
@@ -245,9 +241,7 @@ public class TaskServiceProvider {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response update(@PathParam("id") int id, TaskInfo task) {
-
         Optional<Task> optTask = taskService.getTaskByID(id);
-
         if (optTask.isPresent()) {
             Task updTask = optTask.get();
             updTask.setName(task.getName());
@@ -256,7 +250,6 @@ public class TaskServiceProvider {
             updTask.setType(taskService.getTaskTypeByName(task.getTasktype()).get());
             updTask.setPriority(taskService.getTaskPriorityByName(task.getPriority()).get());
             updTask.store();
-
             return Response.ok(new TaskInfo(updTask)).build();
         }
         return Response.status(Response.Status.NOT_FOUND).build();
@@ -267,11 +260,8 @@ public class TaskServiceProvider {
     @Produces(MediaType.APPLICATION_JSON)
     public Response patch(List<PatchParameter> params) {
         System.err.println("starting patch");
-
         Set<Task> tasks = new HashSet<>();
-
         for (PatchParameter param : params) {
-
             try {
                 int taskID = Integer.parseInt(param.pathElements()[1]);
                 Optional<Task> optTask = taskService.getTaskByID(taskID);
@@ -313,11 +303,10 @@ public class TaskServiceProvider {
                 System.err.println(e.getMessage());
             }
         }
-
         tasks.forEach(Task::store);
-        return Response.ok(new GenericEntity<List<TaskInfo>>(TaskInfo.fromTasks(tasks)) {}).build();
+        return Response.ok(new GenericEntity<List<TaskInfo>>(TaskInfo.fromTasks(tasks)) {
+        }).build();
     }
-
 
     @PUT
     @Path("/assign/{id}")
@@ -355,7 +344,6 @@ public class TaskServiceProvider {
         }
         return Response.status(Response.Status.NOT_FOUND).build();
     }
-
 
     @DELETE
     @Path("/{id}")

@@ -1,9 +1,5 @@
 package ru.mera.agileboard.service;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
 import ru.mera.agileboard.db.impl.StorageServiceImpl;
 import ru.mera.agileboard.model.ABEntityTest;
 import ru.mera.agileboard.model.Task;
@@ -22,7 +18,14 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.Assert.*;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(Parameterized.class)
 public class LoggingServiceTest {

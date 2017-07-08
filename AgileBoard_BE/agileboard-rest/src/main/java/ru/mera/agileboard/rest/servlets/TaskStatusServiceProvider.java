@@ -25,17 +25,12 @@ public class TaskStatusServiceProvider {
     TaskService taskService;
 
     @GET
-    @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getStatuses() {
-
         List<TaskStatus> statuses = taskService.getAllStatuses();
         List<TaskStatusInfo> statusInfos = TaskStatusInfo.fromStatuses(statuses);
         GenericEntity<List<TaskStatusInfo>> entity = new GenericEntity<List<TaskStatusInfo>>(statusInfos) {
         };
         return Response.ok(entity).build();
-
     }
-
-
 }

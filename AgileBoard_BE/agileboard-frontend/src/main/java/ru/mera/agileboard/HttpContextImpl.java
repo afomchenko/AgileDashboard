@@ -19,7 +19,7 @@ public class HttpContextImpl implements HttpContext {
     @Override
     public URL getResource(String name) {
         ClassLoader cl = this.getClass().getClassLoader();
-        return  cl.getResource(name);
+        return cl.getResource(name);
     }
 
     @Override

@@ -1,11 +1,6 @@
 package ru.mera.agileboard.service;
 
 import com.j256.ormlite.table.TableUtils;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
 import ru.mera.agileboard.db.impl.StorageServiceImpl;
 import ru.mera.agileboard.model.Project;
 import ru.mera.agileboard.model.User;
@@ -21,7 +16,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.Assert.*;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 
 @RunWith(Parameterized.class)

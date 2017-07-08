@@ -1,6 +1,5 @@
 package ru.mera.agileboard.rest.servlets;
 
-import org.junit.Test;
 import ru.mera.agileboard.rest.info.TaskInfo;
 
 import javax.ws.rs.client.Entity;
@@ -11,7 +10,11 @@ import javax.ws.rs.core.Response;
 import java.net.URLEncoder;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
 
 public class TaskServiceProviderTest extends TestServer {
 

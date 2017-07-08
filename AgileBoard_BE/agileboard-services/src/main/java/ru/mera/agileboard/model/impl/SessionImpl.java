@@ -83,6 +83,16 @@ public class SessionImpl extends AbstractABEntity implements Session {
         return 0;
     }
 
+    @Override
+    public boolean delete() {
+        try {
+            getDao().delete(this);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return true;
+    }
+
     protected int update() {
         try {
             getDao().update(this);
@@ -99,16 +109,6 @@ public class SessionImpl extends AbstractABEntity implements Session {
             e.printStackTrace();
         }
         return getId();
-    }
-
-    @Override
-    public boolean delete() {
-        try {
-            getDao().delete(this);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return true;
     }
 
 }

@@ -1,7 +1,5 @@
 package ru.mera.agileboard.service;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
 import ru.mera.agileboard.db.impl.StorageServiceImpl;
 import ru.mera.agileboard.model.User;
 import ru.mera.agileboard.model.impl.StorageSingleton;
@@ -12,7 +10,13 @@ import java.time.ZoneId;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.Assert.*;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 public class UserServiceTest {
 

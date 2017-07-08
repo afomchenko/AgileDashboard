@@ -11,20 +11,41 @@ import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.server.filter.HttpMethodOverrideFilter;
 import org.glassfish.jersey.test.JerseyTest;
 import org.glassfish.jersey.test.TestProperties;
+import ru.mera.agileboard.model.Comment;
+import ru.mera.agileboard.model.Project;
+import ru.mera.agileboard.model.Session;
+import ru.mera.agileboard.model.Task;
+import ru.mera.agileboard.model.TaskBuilder;
+import ru.mera.agileboard.model.TaskLog;
+import ru.mera.agileboard.model.TaskPriority;
+import ru.mera.agileboard.model.TaskStatus;
+import ru.mera.agileboard.model.TaskTag;
+import ru.mera.agileboard.model.TaskType;
+import ru.mera.agileboard.model.User;
+import ru.mera.agileboard.service.CommentService;
+import ru.mera.agileboard.service.LoggingService;
+import ru.mera.agileboard.service.ProjectService;
+import ru.mera.agileboard.service.TaskService;
+import ru.mera.agileboard.service.UserService;
+import ru.mera.agileboard.service.UserSessionService;
+
+import javax.ws.rs.core.Application;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+import java.util.concurrent.Executors;
+
 import org.junit.Before;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import ru.mera.agileboard.model.*;
-import ru.mera.agileboard.service.*;
-
-import javax.ws.rs.core.Application;
-import java.util.*;
-import java.util.concurrent.Executors;
 
 import static org.mockito.AdditionalMatchers.and;
 import static org.mockito.AdditionalMatchers.not;
-import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.mock;
+import static org.mockito.Matchers.anyCollectionOf;
+import static org.mockito.Matchers.anyLong;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.when;
 
 /**

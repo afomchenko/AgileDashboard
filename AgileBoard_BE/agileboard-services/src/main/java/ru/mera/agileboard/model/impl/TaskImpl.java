@@ -8,7 +8,13 @@ import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.field.ForeignCollectionField;
 import com.j256.ormlite.table.DatabaseTable;
 import ru.mera.agileboard.db.StorageService;
-import ru.mera.agileboard.model.*;
+import ru.mera.agileboard.model.Project;
+import ru.mera.agileboard.model.Task;
+import ru.mera.agileboard.model.TaskBuilder;
+import ru.mera.agileboard.model.TaskPriority;
+import ru.mera.agileboard.model.TaskStatus;
+import ru.mera.agileboard.model.TaskType;
+import ru.mera.agileboard.model.User;
 import ru.mera.agileboard.service.UserSessionService;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -92,56 +98,16 @@ public class TaskImpl extends AbstractABEntity implements Task {
         return dao;
     }
 
-    public int getEstimated() {
-        return estimated;
-    }
-
-    public void setEstimated(int estimated) {
-        this.estimated = estimated;
-    }
-
     public int getCreatorID() {
         return creator.getId();
-    }
-
-    public User getCreator() {
-        return creator;
-    }
-
-    public void setCreator(User creator) {
-        this.creator = (UserImpl) creator;
     }
 
     public int getAssigneeID() {
         return assignee.getId();
     }
 
-    public User getAssignee() {
-        return assignee;
-    }
-
-    public void setAssignee(User assignee) {
-        this.assignee = (UserImpl) assignee;
-    }
-
-    public TaskPriority getPriority() {
-        return priority;
-    }
-
-    public void setPriority(TaskPriority priority) {
-        this.priority = (TaskPriorityImpl) priority;
-    }
-
     public int getProjectID() {
         return project.getId();
-    }
-
-    public Project getProject() {
-        return project;
-    }
-
-    public void setProject(Project project) {
-        this.project = (ProjectImpl) project;
     }
 
     @Override
@@ -174,10 +140,6 @@ public class TaskImpl extends AbstractABEntity implements Task {
         this.updated = updated;
     }
 
-    public int getStatusID() {
-        return status.getId();
-    }
-
     public TaskStatus getStatus() {
         return status;
     }
@@ -185,10 +147,6 @@ public class TaskImpl extends AbstractABEntity implements Task {
     @Override
     public void setStatus(TaskStatus status) {
         this.status = (TaskStatusImpl) status;
-    }
-
-    public int getTypeID() {
-        return type.getId();
     }
 
     @Override
@@ -201,19 +159,12 @@ public class TaskImpl extends AbstractABEntity implements Task {
         this.type = (TaskTypeImpl) type;
     }
 
-    public int getId() {
-        return id;
+    public TaskPriority getPriority() {
+        return priority;
     }
 
-    protected void setId(int id) {
-        this.id = id;
-    }
-
-    public void addTag(String tagString) {
-        TaskTagImpl tag = new TaskTagImpl(tagString);
-        tag.setTask(this);
-        tag.store();
-//        tags.add(tag);
+    public void setPriority(TaskPriority priority) {
+        this.priority = (TaskPriorityImpl) priority;
     }
 
     public String getDescription() {
@@ -235,16 +186,69 @@ public class TaskImpl extends AbstractABEntity implements Task {
         this.created = created;
     }
 
+    public Project getProject() {
+        return project;
+    }
+
+    public void setProject(Project project) {
+        this.project = (ProjectImpl) project;
+    }
+
+    public User getCreator() {
+        return creator;
+    }
+
+    public void setCreator(User creator) {
+        this.creator = (UserImpl) creator;
+    }
+
+    public User getAssignee() {
+        return assignee;
+    }
+
+    public void setAssignee(User assignee) {
+        this.assignee = (UserImpl) assignee;
+    }
+
+    public int getEstimated() {
+        return estimated;
+    }
+
+    public void setEstimated(int estimated) {
+        this.estimated = estimated;
+    }
+
+    public void addTag(String tagString) {
+        TaskTagImpl tag = new TaskTagImpl(tagString);
+        tag.setTask(this);
+        tag.store();
+//        tags.add(tag);
+    }
+
+    public int getStatusID() {
+        return status.getId();
+    }
+
+    public int getTypeID() {
+        return type.getId();
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    protected void setId(int id) {
+        this.id = id;
+    }
+
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        TaskImpl task = (TaskImpl) o;
-
-        if (getId() != task.getId()) return false;
-        return created == task.created;
-
+    public boolean delete() {
+        try {
+            getDao().delete(this);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return true;
     }
 
 
@@ -264,10 +268,30 @@ public class TaskImpl extends AbstractABEntity implements Task {
 
     @Override
     public int hashCode() {
-        if (getId() < 1) throw new IllegalStateException("id is not assigned");
+        if (getId() < 1) {
+            throw new IllegalStateException("id is not assigned");
+        }
         int result = getId();
         result = 31 * result + (int) created;
         return result;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        TaskImpl task = (TaskImpl) o;
+
+        if (getId() != task.getId()) {
+            return false;
+        }
+        return created == task.created;
+
     }
 
     protected int update() {
@@ -287,16 +311,6 @@ public class TaskImpl extends AbstractABEntity implements Task {
             e.printStackTrace();
         }
         return getId();
-    }
-
-    @Override
-    public boolean delete() {
-        try {
-            getDao().delete(this);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return true;
     }
 
     /**

@@ -51,35 +51,50 @@ public class TaskTagImpl extends AbstractABEntity implements TaskTag {
         return dao;
     }
 
-    public Task getTask() {
-        return task;
-    }
-
-    public void setTask(Task task) {
-        this.task = (TaskImpl) task;
+    @Override
+    public int hashCode() {
+        if (getId() < 1) {
+            throw new IllegalStateException("id is not assigned");
+        }
+        return getId();
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         TaskTagImpl taskTag = (TaskTagImpl) o;
 
-        if (getId() != taskTag.getId()) return false;
+        if (getId() != taskTag.getId()) {
+            return false;
+        }
 
         return true;
     }
 
     @Override
-    public int hashCode() {
-        if (getId() < 1) throw new IllegalStateException("id is not assigned");
-        return getId();
+    public String toString() {
+        return String.valueOf(id);
     }
 
     @Override
     public int getId() {
         return id;
+    }
+
+    @Override
+    public boolean delete() {
+        try {
+            getDao().delete(this);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return true;
     }
 
     @Override
@@ -92,9 +107,12 @@ public class TaskTagImpl extends AbstractABEntity implements TaskTag {
         this.tag = tag;
     }
 
-    @Override
-    public String toString() {
-        return String.valueOf(id);
+    public Task getTask() {
+        return task;
+    }
+
+    public void setTask(Task task) {
+        this.task = (TaskImpl) task;
     }
 
     protected int update() {
@@ -113,15 +131,5 @@ public class TaskTagImpl extends AbstractABEntity implements TaskTag {
             e.printStackTrace();
         }
         return getId();
-    }
-
-    @Override
-    public boolean delete() {
-        try {
-            getDao().delete(this);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return true;
     }
 }

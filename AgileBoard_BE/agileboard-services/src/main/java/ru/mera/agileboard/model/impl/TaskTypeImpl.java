@@ -67,6 +67,17 @@ public class TaskTypeImpl extends AbstractABEntity implements TaskType {
     }
 
     @Override
+    public boolean delete() {
+        try {
+            obsolete = true;
+            getDao().update(this);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return true;
+    }
+
+    @Override
     public String getName() {
         return name;
     }
@@ -97,16 +108,5 @@ public class TaskTypeImpl extends AbstractABEntity implements TaskType {
             e.printStackTrace();
         }
         return getId();
-    }
-
-    @Override
-    public boolean delete() {
-        try {
-            obsolete = true;
-            getDao().update(this);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return true;
     }
 }

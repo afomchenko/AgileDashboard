@@ -1,6 +1,5 @@
 package ru.mera.agileboard.rest.servlets;
 
-import org.junit.Test;
 import ru.mera.agileboard.rest.info.TagInfo;
 import ru.mera.agileboard.rest.info.TagStringInfo;
 
@@ -11,7 +10,11 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 public class TagServiceProviderTest extends TestServer {
 

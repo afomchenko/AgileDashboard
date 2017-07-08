@@ -59,14 +59,6 @@ public class UserImpl extends AbstractABEntity implements User {
         return dao;
     }
 
-    public long getCreated() {
-        return created;
-    }
-
-    public void setCreated(long created) {
-        this.created = created;
-    }
-
     @Override
 
     public String getName() {
@@ -89,9 +81,12 @@ public class UserImpl extends AbstractABEntity implements User {
         this.email = email;
     }
 
-    @Override
-    public int getId() {
-        return id;
+    public long getCreated() {
+        return created;
+    }
+
+    public void setCreated(long created) {
+        this.created = created;
     }
 
     @Override
@@ -105,21 +100,45 @@ public class UserImpl extends AbstractABEntity implements User {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+    public int getId() {
+        return id;
+    }
 
-        UserImpl user = (UserImpl) o;
-
-        if (getId() != user.getId()) return false;
-
+    @Override
+    public boolean delete() {
+        try {
+            obsolete = true;
+            getDao().update(this);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         return true;
     }
 
     @Override
     public int hashCode() {
-        if (getId() < 1) throw new IllegalStateException("id is not assigned");
+        if (getId() < 1) {
+            throw new IllegalStateException("id is not assigned");
+        }
         return getId();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        UserImpl user = (UserImpl) o;
+
+        if (getId() != user.getId()) {
+            return false;
+        }
+
+        return true;
     }
 
     @Override
@@ -143,16 +162,5 @@ public class UserImpl extends AbstractABEntity implements User {
             e.printStackTrace();
         }
         return getId();
-    }
-
-    @Override
-    public boolean delete() {
-        try {
-            obsolete = true;
-            getDao().update(this);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return true;
     }
 }

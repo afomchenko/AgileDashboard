@@ -69,6 +69,10 @@ public class CommentImpl extends AbstractABEntity implements Comment {
         return user;
     }
 
+    public long getCreated() {
+        return created;
+    }
+
     @Override
     public String getComment() {
         return comment;
@@ -79,8 +83,14 @@ public class CommentImpl extends AbstractABEntity implements Comment {
         return id;
     }
 
-    public long getCreated() {
-        return created;
+    @Override
+    public boolean delete() {
+        try {
+            getDao().delete(this);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return true;
     }
 
     protected int update() {
@@ -99,16 +109,6 @@ public class CommentImpl extends AbstractABEntity implements Comment {
             e.printStackTrace();
         }
         return getId();
-    }
-
-    @Override
-    public boolean delete() {
-        try {
-            getDao().delete(this);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return true;
     }
 
     @Override

@@ -7,7 +7,9 @@ import org.glassfish.grizzly.http.server.Request;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.servlet.ServletContainer;
+import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.BundleEvent;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.component.annotations.Activate;
@@ -17,6 +19,8 @@ import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
 import org.osgi.service.http.HttpService;
+import org.osgi.util.tracker.BundleTracker;
+import org.osgi.util.tracker.BundleTrackerCustomizer;
 import org.osgi.util.tracker.ServiceTracker;
 import ru.mera.agileboard.service.CommentService;
 import ru.mera.agileboard.service.LoggingService;
@@ -43,6 +47,7 @@ public class ServiceDispatcher {
     private UserSessionService userSessionService;
 
     private volatile ServiceRegistration<ServiceDispatcher> registration;
+    BundleTracker tracker;
 
     @Reference(cardinality = ReferenceCardinality.MANDATORY, policy = ReferencePolicy.STATIC, name = "BTUserServiceRef")
     public void setUserService(UserService userService) {
@@ -71,6 +76,12 @@ public class ServiceDispatcher {
 
     @Activate
     public void start(BundleContext context) {
+        tracker = new BundleTracker<>(context, Bundle.ACTIVE, new BundleWaiterTrackerCustomizer());
+        tracker.open();
+    }
+
+    private void register(BundleContext context){
+        tracker.close();
         System.err.println("Service Dispatcher starting");
         httpTracker = new ServiceTracker<Object, Object>(context, HttpService.class.getName(), null) {
             public Object addingService(ServiceReference reference) {
@@ -96,6 +107,7 @@ public class ServiceDispatcher {
             }
         };
         httpTracker.open();
+        registration = context.registerService(ServiceDispatcher.class, this, null);
     }
 
     @Deactivate
@@ -104,7 +116,6 @@ public class ServiceDispatcher {
     }
 
     public ResourceConfig createConfig() {
-
         JacksonJsonProvider json = new JacksonJsonProvider().
                 configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false).
                 configure(SerializationFeature.INDENT_OUTPUT, true);
@@ -141,5 +152,28 @@ public class ServiceDispatcher {
         };
         config.register(epg);
         return config;
+    }
+
+    private class BundleWaiterTrackerCustomizer implements BundleTrackerCustomizer<String> {
+        @Override
+        public String addingBundle(Bundle bundle, BundleEvent event) {
+            if ("org.glassfish.hk2.osgi-resource-locator".equals(bundle.getSymbolicName()) && bundle.getState() == Bundle.ACTIVE) {
+                register(bundle.getBundleContext());
+                return null;
+            }
+            return bundle.getSymbolicName();
+        }
+
+        @Override
+        public void modifiedBundle(Bundle bundle, BundleEvent event, String symbolicName) {
+            if ("org.glassfish.hk2.osgi-resource-locator".equals(bundle.getSymbolicName()) && event.getType() == BundleEvent.STARTED ) {
+                register(bundle.getBundleContext());
+            }
+        }
+
+        @Override
+        public void removedBundle(Bundle bundle, BundleEvent event, String symbolicName) {
+        }
+
     }
 }

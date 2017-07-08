@@ -114,12 +114,10 @@ public class TaskServiceProvider {
     @GET
     @Path("/open")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getTasksByUserOpen(@PathParam("id") int id) {
-
+    public Response getTasksByUserOpen() {
         List<TaskInfo> tasks = TaskInfo.fromTasks(
                 taskService.getTasks(TaskService.Filter.USEROPEN,
                         String.valueOf(userSessionService.getUserSession().getUser().getId())));
-
         return Response.ok(new GenericEntity<List<TaskInfo>>(tasks) {
         }).build();
     }
@@ -127,7 +125,7 @@ public class TaskServiceProvider {
     @GET
     @Path("/progress")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getTasksByUserInProgress(@PathParam("id") int id) {
+    public Response getTasksByUserInProgress() {
         List<TaskInfo> tasks = TaskInfo.fromTasks(loggingService.getLoggedByTask(
                 taskService.getTasks(TaskService.Filter.USERINPROGRESS,
                         String.valueOf(userSessionService.getUserSession().getUser().getId()))));
@@ -138,7 +136,7 @@ public class TaskServiceProvider {
     @GET
     @Path("/complete")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getTasksByUserCompleted(@PathParam("id") int id) {
+    public Response getTasksByUserCompleted() {
 
         List<TaskInfo> tasks = TaskInfo.fromTasks(loggingService.getLoggedByTask(
                 taskService.getTasks(TaskService.Filter.USERCOMPL,
@@ -161,34 +159,27 @@ public class TaskServiceProvider {
         }).build();
     }
 
-
     @GET
     @Path("/reported")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getTasksByUserReported() {
-
         List<TaskInfo> tasks = TaskInfo.fromTasks(loggingService.getLoggedByTask(
                 taskService.getTasks(TaskService.Filter.CREATOR,
                         String.valueOf(userSessionService.getUserSession().getUser().getId()))));
-
         return Response.ok(new GenericEntity<List<TaskInfo>>(tasks) {
         }).build();
     }
-
 
     @GET
     @Path("/logged")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getTasksByUserLogged() {
-
         List<TaskInfo> tasks = TaskInfo.fromTasks(loggingService.getLoggedByTask(
                 taskService.getTasks(TaskService.Filter.USERLOGGED,
                         String.valueOf(userSessionService.getUserSession().getUser().getId()))));
-
         return Response.ok(new GenericEntity<List<TaskInfo>>(tasks) {
         }).build();
     }
-
 
     @GET
     @Path("tag/{tag}")
@@ -199,20 +190,17 @@ public class TaskServiceProvider {
                 taskService.filterByProjects(taskService.getTasks(TaskService.Filter.TAG, tag),
                         projectService.getProjectsByUser(userSessionService.getUserSession().getUser())
                 )));
-
         return Response.ok(new GenericEntity<List<TaskInfo>>(tasks) {
         }).build();
     }
 
 
     @GET
-    @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getTasks() {
         List<TaskInfo> tasks = TaskInfo.fromTasks(loggingService.getLoggedByTask(taskService.getTasks()));
         return Response.ok(new GenericEntity<List<TaskInfo>>(tasks) {
         }).build();
-
     }
 
     @GET
@@ -220,22 +208,18 @@ public class TaskServiceProvider {
     @ManagedAsync
     @Produces(MediaType.APPLICATION_JSON)
     public void getTasks(@Suspended final AsyncResponse response) {
-
         ListenableFuture<List<Task>> future = taskService.getAllTasksAsync();
         Futures.addCallback(future, new FutureCallback<List<Task>>() {
             public void onSuccess(List<Task> tasks) {
                 response.resume(TaskInfo.fromTasks(tasks));
             }
-
             public void onFailure(Throwable thrown) {
                 response.resume(thrown);
             }
         });
-
     }
 
     @POST
-    @Path("/")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response create(TaskInfo task) {
@@ -279,7 +263,6 @@ public class TaskServiceProvider {
     }
 
     @PATCH
-    @Path("/")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response patch(List<PatchParameter> params) {
@@ -332,9 +315,7 @@ public class TaskServiceProvider {
         }
 
         tasks.forEach(Task::store);
-
-        return Response.ok(new GenericEntity<List<TaskInfo>>(TaskInfo.fromTasks(tasks)) {
-        }).build();
+        return Response.ok(new GenericEntity<List<TaskInfo>>(TaskInfo.fromTasks(tasks)) {}).build();
     }
 
 
@@ -343,22 +324,16 @@ public class TaskServiceProvider {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response assign(@PathParam("id") int id, UserInfo userInfo) {
-
         System.err.println(userInfo);
-
-
         Optional<Task> optTask = taskService.getTaskByID(id);
         Optional<User> optUser = userService.findUserByID(userInfo.getId());
-
         if (optTask.isPresent() && optUser.isPresent()) {
             Task updTask = optTask.get();
             System.err.println(updTask);
-
             updTask.setAssignee(optUser.get());
             System.err.println("assign");
             updTask.store();
             System.err.println("stored");
-
             return Response.ok(new TaskInfo(updTask)).build();
         }
         return Response.status(Response.Status.NOT_FOUND).build();
@@ -369,17 +344,13 @@ public class TaskServiceProvider {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response changeStatus(@PathParam("id") int id, TaskStatusInfo statusInfo) {
-
         Optional<Task> optTask = taskService.getTaskByID(id);
         Optional<TaskStatus> optStatus = taskService.getTaskStatusByID(statusInfo.getId());
-
         if (optTask.isPresent() && optStatus.isPresent()) {
             Task updTask = optTask.get();
             System.err.println(updTask);
-
             updTask.setStatus(optStatus.get());
             updTask.store();
-
             return Response.ok(new TaskInfo(updTask)).build();
         }
         return Response.status(Response.Status.NOT_FOUND).build();
@@ -390,16 +361,11 @@ public class TaskServiceProvider {
     @Path("/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response delete(@PathParam("id") int id) {
-
         Optional<Task> task = taskService.getTaskByID(id);
-
         if (task.isPresent()) {
             task.get().delete();
             return Response.ok().build();
         }
-
         return Response.status(Response.Status.NOT_FOUND).build();
-
-
     }
 }

@@ -55,7 +55,6 @@ public class HttpContextImpl implements HttpContext {
         return false;
     }
 
-
     @Override
     public URL getResource(String name) {
         return getClass().getResource(name);

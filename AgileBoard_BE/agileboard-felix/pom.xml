@@ -175,7 +175,7 @@
                                     <artifactId>org.liveSense.fragment.sun.misc</artifactId>
                                 </artifactItem>
                                 <artifactItem>
-                                    <groupId>org.apache.felix</groupId>
+                                    <groupId>org.osgi</groupId>
                                     <artifactId>org.osgi.compendium</artifactId>
                                 </artifactItem>
                                 <artifactItem>

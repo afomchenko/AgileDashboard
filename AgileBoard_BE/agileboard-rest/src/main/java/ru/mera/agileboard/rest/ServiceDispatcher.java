@@ -2,7 +2,6 @@ package ru.mera.agileboard.rest;
 
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
-import org.osgi.service.component.annotations.*;
 import org.glassfish.grizzly.http.server.ErrorPageGenerator;
 import org.glassfish.grizzly.http.server.Request;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
@@ -10,14 +9,24 @@ import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.servlet.ServletContainer;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
+import org.osgi.framework.ServiceRegistration;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicy;
 import org.osgi.service.http.HttpService;
 import org.osgi.util.tracker.ServiceTracker;
-import ru.mera.agileboard.service.*;
+import ru.mera.agileboard.service.CommentService;
+import ru.mera.agileboard.service.LoggingService;
+import ru.mera.agileboard.service.ProjectService;
+import ru.mera.agileboard.service.TaskService;
+import ru.mera.agileboard.service.UserService;
+import ru.mera.agileboard.service.UserSessionService;
 
-import javax.ws.rs.core.UriBuilder;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
-import java.net.URI;
 
 /**
  * Created by antfom on 12.02.2015.
@@ -25,31 +34,58 @@ import java.net.URI;
 @Component(name = "RestServiceDispatcherComponent", immediate = true)
 public class ServiceDispatcher {
 
-    public static final URI BASE_URI = getBaseURI();
-    private ServiceTracker httpTracker;
-    @Reference(cardinality = ReferenceCardinality.MANDATORY, policy = ReferencePolicy.STATIC, name = "BTUserServiceRef")
+    private ServiceTracker<Object, Object> httpTracker;
     private UserService userService;
-    //    private HttpServer server;
-    @Reference(cardinality = ReferenceCardinality.MANDATORY, policy = ReferencePolicy.STATIC, name = "BTTasksServiceRef")
     private TaskService taskService;
-    @Reference(cardinality = ReferenceCardinality.MANDATORY, policy = ReferencePolicy.STATIC, name = "BTProjectsServiceRef")
     private ProjectService projectService;
-    @Reference(cardinality = ReferenceCardinality.MANDATORY, policy = ReferencePolicy.STATIC, name = "BTCommentsServiceRef")
     private CommentService commentService;
-    @Reference(cardinality = ReferenceCardinality.MANDATORY, policy = ReferencePolicy.STATIC, name = "BTLoggingServiceRef")
     private LoggingService loggingService;
-    @Reference(cardinality = ReferenceCardinality.MANDATORY, policy = ReferencePolicy.STATIC, name = "BTUserSessionRef")
     private UserSessionService userSessionService;
 
-    private static URI getBaseURI() {
-        return UriBuilder.fromUri("http://localhost").port(8080).path("/agile").build();
+    private volatile ServiceRegistration<ServiceDispatcher> registration;
+
+    @Reference(cardinality = ReferenceCardinality.MANDATORY, policy = ReferencePolicy.STATIC, name = "BTUserServiceRef")
+    public void setUserService(UserService userService) {
+        this.userService = userService;
+    }
+    @Reference(cardinality = ReferenceCardinality.MANDATORY, policy = ReferencePolicy.STATIC, name = "BTTasksServiceRef")
+    public void setTaskService(TaskService taskService) {
+        this.taskService = taskService;
+    }
+    @Reference(cardinality = ReferenceCardinality.MANDATORY, policy = ReferencePolicy.STATIC, name = "BTProjectsServiceRef")
+    public void setProjectService(ProjectService projectService) {
+        this.projectService = projectService;
+    }
+    @Reference(cardinality = ReferenceCardinality.MANDATORY, policy = ReferencePolicy.STATIC, name = "BTCommentsServiceRef")
+    public void setCommentService(CommentService commentService) {
+        this.commentService = commentService;
+    }
+    @Reference(cardinality = ReferenceCardinality.MANDATORY, policy = ReferencePolicy.STATIC, name = "BTLoggingServiceRef")
+    public void setLoggingService(LoggingService loggingService) {
+        this.loggingService = loggingService;
+    }
+    @Reference(cardinality = ReferenceCardinality.MANDATORY, policy = ReferencePolicy.STATIC, name = "BTUserSessionRef")
+    public void setUserSessionService(UserSessionService userSessionService) {
+        this.userSessionService = userSessionService;
     }
 
     @Activate
     public void start(BundleContext context) {
         System.err.println("Service Dispatcher starting");
-
-        httpTracker = new ServiceTracker(context, HttpService.class.getName(), null) {
+        httpTracker = new ServiceTracker<Object, Object>(context, HttpService.class.getName(), null) {
+            public Object addingService(ServiceReference reference) {
+                ServiceReference ref = context.getServiceReference(HttpService.class.getName());
+                HttpService service = (HttpService) context.getService(ref);
+                // Register a Jersey container
+                System.err.println("creating config");
+                ServletContainer servlet = new ServletContainer(createConfig());//new ABServlet(config, userSessionService);
+                try {
+                    service.registerServlet("/agile", servlet, null, null);// new HttpContextImpl(userSessionService));
+                } catch (Exception exception) {
+                    exception.printStackTrace();
+                }
+                return service;
+            }
             public void removedService(ServiceReference reference, Object service) {
                 // HTTP service is no longer available, unregister our servlet...
                 try {
@@ -58,37 +94,13 @@ public class ServiceDispatcher {
                     // Ignore; servlet registration probably failed earlier on...
                 }
             }
-
-            public Object addingService(ServiceReference reference) {
-                ServiceReference ref = context.getServiceReference(HttpService.class.getName());
-                HttpService service = (HttpService) context.getService(ref);
-
-                // Register a Jersey container
-                System.err.println("crating config");
-
-                ServletContainer servlet = new ServletContainer(createConfig());//new ABServlet(config, userSessionService);
-
-
-                try {
-                    service.registerServlet("/agile", servlet, null, null);// new HttpContextImpl(userSessionService));
-                } catch (Exception exception) {
-                    exception.printStackTrace();
-                }
-                return service;
-            }
         };
-
         httpTracker.open();
-//
-//
-//        server = GrizzlyHttpServerFactory.createHttpServer(BASE_URI, createConfig());
-
     }
 
     @Deactivate
     public void stop() {
         httpTracker.close();
-//        server.shutdown();
     }
 
     public ResourceConfig createConfig() {
@@ -96,13 +108,9 @@ public class ServiceDispatcher {
         JacksonJsonProvider json = new JacksonJsonProvider().
                 configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false).
                 configure(SerializationFeature.INDENT_OUTPUT, true);
-
         ResourceConfig config = new ResourceConfig();
-
         config.packages("ru.mera.agileboard.rest.servlets");
-
         config.register(json);
-
         config.register(new AbstractBinder() {
             @Override
             protected void configure() {
@@ -131,13 +139,7 @@ public class ServiceDispatcher {
                 return sb.toString();
             }
         };
-
         config.register(epg);
-
-
         return config;
     }
 }
-
-
-
